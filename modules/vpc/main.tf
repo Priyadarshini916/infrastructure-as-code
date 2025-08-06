@@ -30,6 +30,30 @@ resource "aws_route_table" "prod-rt" {
     Name = "prod-rt"
   }
 }
+#create private-rt
+resource "aws_route_table" "private_route_table" {
+  count = length(var.private_subnet_cidrs)
+  vpc_id = aws_vpc.prod-vpc.id
+
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.prod-natgateway[count.index].id
+  }
+  tags = {
+    
+    Name = "private-route-table"
+  }
+}
+
+resource "aws_route_table_association" "private_subnet_association" {
+  count          = length(var.private_subnet_cidrs)
+  subnet_id      = aws_subnet.private[count.index].id
+  route_table_id = aws_route_table.private_route_table[count.index].id
+}
+
+
+
 #create a private subnet
 
 resource "aws_subnet" "private" {
@@ -98,3 +122,5 @@ resource "aws_nat_gateway" "prod-natgateway" {
   # on the Internet Gateway for the VPC.
   depends_on = [aws_internet_gateway.prod-igw]
 }
+
+
