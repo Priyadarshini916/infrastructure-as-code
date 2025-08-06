@@ -1,10 +1,6 @@
-provider "aws" {
-  region = "us-east-1"
-}
-
 #create a vpc
 resource "aws_vpc" "prod-vpc" {
-  cidr_block = "10.81.0.0/16"
+  cidr_block = var.vpc_cidr_block
   tags = {
     Name = "prod-vpc"
   }
@@ -22,7 +18,7 @@ resource "aws_route_table" "prod-rt" {
   vpc_id = aws_vpc.prod-vpc.id
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block = var.pub_rt
     gateway_id = aws_internet_gateway.prod-igw.id
   }
 
@@ -37,7 +33,7 @@ resource "aws_route_table" "private_route_table" {
 
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block = var.pvt_rt
     nat_gateway_id = aws_nat_gateway.prod-natgateway[count.index].id
   }
   tags = {
@@ -122,5 +118,13 @@ resource "aws_nat_gateway" "prod-natgateway" {
   # on the Internet Gateway for the VPC.
   depends_on = [aws_internet_gateway.prod-igw]
 }
-
+variable "vpc_cidr_block" {
+  
+}
+variable "pub_rt" {
+  
+}
+variable "pvt_rt" {
+  
+}
 
