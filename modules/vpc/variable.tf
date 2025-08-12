@@ -27,3 +27,17 @@ variable "pub_rt" {
 variable "pvt_rt" {
   
 }
+
+# variables for different users to add different routes
+
+variable "user_routes" {
+  description = "A map of user-specific route configurations."
+  type = map(object({
+    #route_table_id        = string
+    destination_cidr_block = string
+    gateway_id            = optional(string)
+    nat_gateway_id        = optional(string)
+    instance_id           = optional(string)
+  }))
+  default = {} # Provide a default empty map
+}

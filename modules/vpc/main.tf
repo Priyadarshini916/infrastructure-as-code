@@ -119,5 +119,14 @@ resource "aws_route_table" "private_route_table" {
     Name = "Private-Route-Table"
   }
 }
+#create additional routes for different users using variables
 
+resource "aws_route" "user_specific_routes" {
+  for_each = {for rtb_id, routes in var.user_routes : rtb_id => routes}
+
+  route_table_id        = each.key
+  destination_cidr_block = each.value.destination_cidr_block
+  gateway_id = try(each.value.gateway_id, null )
+  nat_gateway_id = try(each.value.nat_gateway_id, null)
+}
 
