@@ -2,9 +2,9 @@
 
 resource "aws_launch_template" "my_launch_template" {
   name_prefix   = "my-app-lt"
-  image_id      = "ami-0de716d6197524dd9"  # Replace with your desired AMI ID
-  instance_type = "t2.micro"
-  key_name      = "key1"           # Replace with your EC2 Key Pair name
+  image_id      = var.image_id  # Replace with your desired AMI ID
+  instance_type = var.instance_type
+  key_name      = var.key_name         # Replace with your EC2 Key Pair name
   vpc_security_group_ids = [aws_security_group.my_security_group.id]
    user_data = base64encode(<<EOF
     #!/bin/bash
@@ -27,7 +27,7 @@ resource "aws_launch_template" "my_launch_template" {
 resource "aws_security_group" "my_security_group" {
   name        = "my-app-sg"
   description = "Allow inbound HTTP and SSH"
-  vpc_id      = "vpc-05f0bc77221440cd2" # Replace with your VPC ID
+  vpc_id      = var.vpc_id # Replace with your VPC ID
 
   ingress {
     description = "SSH from VPC"
@@ -58,7 +58,7 @@ resource "aws_autoscaling_group" "asg-prod" {
   max_size                  = 5  # Maximum number of instances allowed
   min_size                  = 2  # Minimum number of instances to maintain
   desired_capacity          = 2  # Initial desired number of instances
-  vpc_zone_identifier       = ["subnet-019253ddeb5246b5d", "subnet-0f85e0cb91d7f66c9"] # List of subnets
+  vpc_zone_identifier       = var.vpc_zone_identifier # List of subnets
   health_check_type         = "EC2"  # Or "ELB" if using a load balancer
   default_cooldown          = 120 # Cool down period (in seconds) between scaling activities
 
