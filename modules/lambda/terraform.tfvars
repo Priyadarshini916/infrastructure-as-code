@@ -1,0 +1,5 @@
+#function_name = ""
+#handler = ""
+#runtime = ""
+#filename = ""
+#aws_iam_role = "aws_iam_role.lambda_exec_role.arn"
